@@ -14,7 +14,7 @@ const HealthNewsFeed = () => {
     
     // Fetch initial news
     setIsLoading(true);
-    axios.get(`http://localhost:3000/news/getallnews/${category}`)
+    axios.get(`https://realtime-news-app.up.railway.app/news/getallnews/${category}`)
       .then(res => {
         setNews(res.data);
         setIsLoading(false);
