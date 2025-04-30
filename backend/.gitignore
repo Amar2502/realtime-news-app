@@ -1,0 +1,28 @@
+# Node.js dependencies
+node_modules/
+
+# Environment variables
+.env
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Build outputs (if using TypeScript)
+dist/
+build/
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# IDE settings
+.vscode/
+.idea/
+
+# Optional: PM2 logs (if using PM2 for deployment)
+pids
+*.pid
+*.seed
+*.pid.lock
