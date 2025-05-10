@@ -8,6 +8,8 @@ const username = getUsername();
 // Connect to the server and pass the username
 const socket = io("https://realtime-news-app-kjfj.onrender.com", {
   query: { username }, // Send the username as a query param to the server
+  transports: ['websocket'],
+  withCredentials: true
 });
 
 socket.on('connect', () => {
