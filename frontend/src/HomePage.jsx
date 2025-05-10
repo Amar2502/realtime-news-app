@@ -134,12 +134,6 @@ const NewsHomepage = () => {
           <h2 className="text-2xl font-bold text-gray-900">
             Browse Categories
           </h2>
-          <Link
-            to="/categories"
-            className="text-blue-600 hover:text-blue-800 font-medium flex items-center"
-          >
-            View all <ChevronRight className="w-4 h-4 ml-1" />
-          </Link>
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
