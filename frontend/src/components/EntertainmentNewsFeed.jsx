@@ -135,7 +135,7 @@ const EntertainmentNewsFeed = () => {
                     {item.category}
                   </span>
                 </div>
-                <p className="text-gray-600 mb-4">{item.content}</p>
+                <p className="text-gray-600 mb-4 line-clamp-2 flex-grow">{item.content}</p>
                 <div className="flex justify-between items-center text-sm text-gray-500">
                   <div className="flex items-center">
                     <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
