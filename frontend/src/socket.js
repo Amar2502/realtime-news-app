@@ -6,7 +6,7 @@ import { getUsername } from "./utils/getUsername";
 const username = getUsername();
 
 // Connect to the server and pass the username
-const socket = io("http://localhost:3000", {
+const socket = io("https://realtime-news-app-kjfj.onrender.com", {
   query: { username }, // Send the username as a query param to the server
 });
 

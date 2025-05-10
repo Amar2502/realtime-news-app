@@ -17,6 +17,7 @@ const io = new Server(server, {
   cors: {
     origin: 'https://realtime-news-app.vercel.app/',
     methods: ['GET', 'POST', 'DELETE'],
+    credentials: true
   },
 });
 
