@@ -15,6 +15,8 @@ import ScienceNewsFeed from './components/ScienceNewsfeed.jsx';
 import HealthNewsFeed from './components/HealthNewsFeed.jsx';
 import EntertainmentNewsFeed from './components/EntertainmentNewsFeed.jsx';
 import BusinessNewsFeed from './components/BusinessNewsFeed.jsx';
+import CreateNews from './components/CreateNews.jsx';
+import NewsDetail from './components/NewsDetail.jsx';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -26,6 +28,8 @@ const router = createBrowserRouter(
       <Route path="/health" element={<HealthNewsFeed />} />
       <Route path="/entertainment" element={<EntertainmentNewsFeed />} />
       <Route path="/business" element={<BusinessNewsFeed />} />
+      <Route path="/create-news" element={<CreateNews />} />
+      <Route path="/news/:id" element={<NewsDetail />} />
     </Route>
   )
 );

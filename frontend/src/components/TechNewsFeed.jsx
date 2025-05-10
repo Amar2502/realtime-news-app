@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import socket from "../socket";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 const TechNewsFeed = () => {
   const [news, setNews] = useState([]);
@@ -8,30 +9,28 @@ const TechNewsFeed = () => {
   const category = "Tech";
 
   useEffect(() => {
-    socket.onAny((event, ...args) => {
-      console.log("📡 Socket event received:", event, args);
-    });
-    
     // Fetch initial news
-    setIsLoading(true);
-    axios.get(`https://realtime-news-app.up.railway.app/news/getallnews/${category}`)
-      .then(res => {
+    const fetchNews = async () => {
+      setIsLoading(true);
+      try {
+        const res = await axios.get(`http://localhost:3000/news/getallnews/${category}`);
         setNews(res.data);
+      } catch (err) {
+        console.error("Error fetching news:", err);
+      } finally {
         setIsLoading(false);
-      })
-      .catch(err => {
-        console.error(err);
-        setIsLoading(false);
-      });
+      }
+    };
+
+    fetchNews();
 
     // Subscribe to category
     socket.emit("subscribe", category);
 
     // Listen for new news
     socket.on("new-news", (newItem) => {
-      console.log("🔔 Received new-news:", newItem); // <-- Debug log
       if (newItem.category === category) {
-        setNews(prev => [newItem, ...prev]);
+        setNews((prev) => [newItem, ...prev]);
       }
     });
 
@@ -43,18 +42,18 @@ const TechNewsFeed = () => {
 
   const formatTimeAgo = (dateString) => {
     if (!dateString) return "";
-    
+
     const now = new Date();
     const past = new Date(dateString);
     const diffInSeconds = Math.floor((now - past) / 1000);
-    
+
     if (diffInSeconds < 60) return `${diffInSeconds} seconds ago`;
     if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} minutes ago`;
     if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hours ago`;
     if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)} days ago`;
-    
+
     // For older dates, show the actual date
-    const options = { year: 'numeric', month: 'short', day: 'numeric' };
+    const options = { year: "numeric", month: "short", day: "numeric" };
     return past.toLocaleDateString(undefined, options);
   };
 
@@ -78,7 +77,7 @@ const TechNewsFeed = () => {
             </div>
           )}
         </div>
-        
+
         <div className="flex items-center">
           {isLoading ? (
             <div className="flex items-center text-blue-500 bg-blue-50 px-4 py-2 rounded-md">
@@ -89,8 +88,7 @@ const TechNewsFeed = () => {
               <span>Updating feed...</span>
             </div>
           ) : (
-            <div className="">
-            </div>
+            <div className=""></div>
           )}
         </div>
       </div>
@@ -104,24 +102,36 @@ const TechNewsFeed = () => {
         </div>
       ) : (
         <div className="space-y-6">
-          {news.map(item => (
+          {news.map((item) => (
             <div key={item._id} className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-300">
               <div className="p-6">
                 <div className="flex justify-between items-start mb-2">
                   <h2 className="text-xl font-semibold text-gray-800 mb-2 flex-grow">{item.title}</h2>
-                  <span className={`text-xs font-semibold px-2.5 py-0.5 rounded-full ml-2 ${
-                    item.category === "Tech" || item.category === "tech" ? "bg-blue-100 text-blue-800" :
-                    item.category === "Finance" ? "bg-green-100 text-green-800" :
-                    item.category === "Business" ? "bg-indigo-100 text-indigo-800" :
-                    item.category === "Sports" ? "bg-orange-100 text-orange-800" :
-                    item.category === "Entertainment" ? "bg-purple-100 text-purple-800" :
-                    item.category === "Health" ? "bg-red-100 text-red-800" :
-                    item.category === "Science" ? "bg-cyan-100 text-cyan-800" :
-                    item.category === "Education" ? "bg-yellow-100 text-yellow-800" :
-                    item.category === "Politics" ? "bg-gray-100 text-gray-800" :
-                    item.category === "Environment" ? "bg-emerald-100 text-emerald-800" :
-                    "bg-blue-100 text-blue-800"
-                  }`}>
+                  <span
+                    className={`text-xs font-semibold px-2.5 py-0.5 rounded-full ml-2 ${
+                      item.category === "Tech" || item.category === "tech"
+                        ? "bg-blue-100 text-blue-800"
+                        : item.category === "Finance"
+                        ? "bg-green-100 text-green-800"
+                        : item.category === "Business"
+                        ? "bg-indigo-100 text-indigo-800"
+                        : item.category === "Sports"
+                        ? "bg-orange-100 text-orange-800"
+                        : item.category === "Entertainment"
+                        ? "bg-purple-100 text-purple-800"
+                        : item.category === "Health"
+                        ? "bg-red-100 text-red-800"
+                        : item.category === "Science"
+                        ? "bg-cyan-100 text-cyan-800"
+                        : item.category === "Education"
+                        ? "bg-yellow-100 text-yellow-800"
+                        : item.category === "Politics"
+                        ? "bg-gray-100 text-gray-800"
+                        : item.category === "Environment"
+                        ? "bg-emerald-100 text-emerald-800"
+                        : "bg-blue-100 text-blue-800"
+                    }`}
+                  >
                     {item.category}
                   </span>
                 </div>
@@ -134,11 +144,12 @@ const TechNewsFeed = () => {
                     {item.createdAt ? formatTimeAgo(item.createdAt) : "Recent"}
                   </div>
                   <div className="flex space-x-2">
-                    <button className="text-gray-500 hover:text-gray-700 inline-flex items-center">
-                    </button>
-                    <button className="text-blue-500 hover:text-blue-700 font-medium">
+                    <Link
+                      to={`/news/${item._id}`}
+                      className="text-blue-500 hover:text-blue-700 font-medium"
+                    >
                       Read more
-                    </button>
+                    </Link>
                   </div>
                 </div>
               </div>

@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Clock, TrendingUp, ChevronRight, Rss } from "lucide-react";
+import { Clock, TrendingUp, ChevronRight, Rss, Plus } from "lucide-react";
+import axios from "axios";
+import socket from "./socket";
 
 const NewsHomepage = () => {
   const [latestNews, setLatestNews] = useState([]);
@@ -54,81 +56,40 @@ const NewsHomepage = () => {
   ];
 
   useEffect(() => {
-    // Simulate fetching latest news from all categories
-    const fetchNews = () => {
+    // Fetch latest news from all categories
+    const fetchNews = async () => {
       setIsLoading(true);
-
-      // Simulate API delay
-      setTimeout(() => {
-        // Sample news data across categories
-        const sampleNews = [
-          {
-            _id: "1",
-            title: "New AI Model Breaks Performance Records",
-            content:
-              "Researchers have developed a new AI model that outperforms previous benchmarks by 30% while using less computational resources.",
-            category: "Tech",
-
-            createdAt: new Date(Date.now() - 1800000).toISOString(),
-          },
-          {
-            _id: "2",
-            title: "Global Market Rally Continues for Third Day",
-            content:
-              "Stock markets around the world continue their upward trend following positive economic indicators.",
-            category: "Business",
-
-            createdAt: new Date(Date.now() - 3600000).toISOString(),
-          },
-          {
-            _id: "3",
-            title: "Breakthrough in Cancer Treatment Shows Promise",
-            content:
-              "A new immunotherapy approach has shown remarkable results in early clinical trials.",
-            category: "Health",
-
-            createdAt: new Date(Date.now() - 7200000).toISOString(),
-          },
-          {
-            _id: "4",
-            title: "Climate Summit Concludes with New Global Agreements",
-            content:
-              "World leaders have reached consensus on ambitious new targets to reduce carbon emissions by 2030.",
-            category: "Environment",
-
-            createdAt: new Date(Date.now() - 10800000).toISOString(),
-          },
-          {
-            _id: "5",
-            title: "Major Sports League Announces Expansion Teams",
-            content:
-              "Two new cities will join the league starting next season, bringing the total number of teams to 32.",
-            category: "Sports",
-
-            createdAt: new Date(Date.now() - 14400000).toISOString(),
-          },
-          {
-            _id: "6",
-            title: "Scientists Discover New Exoplanet with Potential for Life",
-            content:
-              "The newly found exoplanet orbits in the habitable zone and shows signs of water vapor in its atmosphere.",
-            category: "Science",
-
-            createdAt: new Date(Date.now() - 18000000).toISOString(),
-          },
-        ];
-
+      try {
+        const res = await axios.get("http://localhost:3000/news/getallnews/all");
+        setLatestNews(res.data);
         // Set featured article (first trending one)
-        const featuredArticle = sampleNews.find((article) => article.trending);
+        const featuredArticle = res.data.find((article) => article.trending);
         setFeatured(featuredArticle);
-
-        // Set other articles
-        setLatestNews(sampleNews);
+      } catch (err) {
+        console.error("Error fetching news:", err);
+      } finally {
         setIsLoading(false);
-      }, 1500);
+      }
     };
 
     fetchNews();
+
+    // Subscribe to all categories for real-time updates
+    categories.forEach((category) => {
+      socket.emit("subscribe", category.id);
+    });
+
+    // Listen for new news
+    socket.on("new-news", (newItem) => {
+      setLatestNews((prev) => [newItem, ...prev]);
+    });
+
+    return () => {
+      socket.off("new-news");
+      categories.forEach((category) => {
+        socket.emit("unsubscribe", category.id);
+      });
+    };
   }, []);
 
   const formatTimeAgo = (dateString) => {
@@ -148,14 +109,23 @@ const NewsHomepage = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      {/* Hero section with greeting */}
-      <div className="mb-10">
-        <h1 className="text-4xl font-bold text-gray-900 mb-2">
-          Welcome to NewsHub
-        </h1>
-        <p className="text-xl text-gray-600">
-          Your daily source for the latest and most relevant news
-        </p>
+      {/* Hero section with greeting and create button */}
+      <div className="mb-10 flex justify-between items-center">
+        <div>
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">
+            Welcome to NewsHub
+          </h1>
+          <p className="text-xl text-gray-600">
+            Your daily source for the latest and most relevant news
+          </p>
+        </div>
+        <Link
+          to="/create-news"
+          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
+        >
+          <Plus className="w-5 h-5 mr-2" />
+          Create News
+        </Link>
       </div>
 
       {/* Category selection */}
@@ -205,9 +175,7 @@ const NewsHomepage = () => {
         <>
           {/* Latest News Section */}
           <div>
-
-            <h2>Latest News</h2>
-
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Latest News</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {latestNews
                 .filter((item) => item._id !== featured?._id)
@@ -249,14 +217,14 @@ const NewsHomepage = () => {
                       <p className="text-sm text-gray-600 mb-4 line-clamp-2 flex-grow">
                         {item.content}
                       </p>
-                      <div className="flex items-center justify-between mt-auto text-sm">
-                        <div className="flex items-center text-gray-500">
+                      <div className="flex justify-between items-center text-sm text-gray-500">
+                        <div className="flex items-center">
                           <Clock className="w-4 h-4 mr-1" />
                           {formatTimeAgo(item.createdAt)}
                         </div>
                         <Link
                           to={`/news/${item._id}`}
-                          className="text-blue-600 hover:text-blue-800 font-medium"
+                          className="text-blue-500 hover:text-blue-700 font-medium"
                         >
                           Read more
                         </Link>

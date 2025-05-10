@@ -21,7 +21,7 @@ export const getAllNews = async (req, res) => {
 
 export const getNewsById = async (req, res) => {
   try {
-    const { id } = req.body;
+    const { id } = req.params; // Get ID from URL params
     const news = await News.findById(id); // Get news by ID
     if (!news) {
       return res.status(404).json({ message: "News not found" });
@@ -32,6 +32,7 @@ export const getNewsById = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
 
 export const createNews = async (req, res) => {
   console.log("Creating news:", req.body);

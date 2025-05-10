@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.post("/createnews", createNews);
 router.get('/getallnews/:category', getAllNews);
-router.get("/getnews", getNewsById);
+router.get("/getnews/:id", getNewsById);
 router.delete("/deletenews", deleteNews);
 
 export default router;

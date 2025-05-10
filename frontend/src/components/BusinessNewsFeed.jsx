@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import socket from "../socket";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 const BusinessNewsFeed = () => {
   const [news, setNews] = useState([]);
@@ -14,7 +15,7 @@ const BusinessNewsFeed = () => {
     
     // Fetch initial news
     setIsLoading(true);
-    axios.get(`https://realtime-news-app.up.railway.app/news/getallnews/${category}`)
+    axios.get(`http://localhost:3000/news/getallnews/${category}`)
       .then(res => {
         setNews(res.data);
         setIsLoading(false);
@@ -134,11 +135,12 @@ const BusinessNewsFeed = () => {
                     {item.createdAt ? formatTimeAgo(item.createdAt) : "Recent"}
                   </div>
                   <div className="flex space-x-2">
-                    <button className="text-gray-500 hover:text-gray-700 inline-flex items-center">
-                    </button>
-                    <button className="text-blue-500 hover:text-blue-700 font-medium">
+                    <Link
+                      to={`/news/${item._id}`}
+                      className="text-blue-500 hover:text-blue-700 font-medium"
+                    >
                       Read more
-                    </button>
+                    </Link>
                   </div>
                 </div>
               </div>
