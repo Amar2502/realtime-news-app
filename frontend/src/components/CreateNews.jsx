@@ -7,7 +7,7 @@ const CreateNews = () => {
   const [formData, setFormData] = useState({
     title: "",
     content: "",
-    category: "tech", // Default category
+    category: "Tech", // Default category
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
