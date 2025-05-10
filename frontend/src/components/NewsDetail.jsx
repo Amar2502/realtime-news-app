@@ -13,7 +13,7 @@ const NewsDetail = () => {
   useEffect(() => {
     const fetchNews = async () => {
       try {
-        const res = await axios.get(`http://localhost:3000/news/getnews/${id}`);
+        const res = await axios.get(`https://realtime-news-app-kjfj.onrender.com/news/getnews/${id}`);
         setNews(res.data);
       } catch (err) {
         console.error("Error fetching news:", err);

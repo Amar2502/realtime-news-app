@@ -34,7 +34,7 @@ const CreateNews = () => {
     setIsSubmitting(true);
 
     try {
-      await axios.post("http://localhost:3000/news/createnews", formData);
+      await axios.post("https://realtime-news-app-kjfj.onrender.com/news/createnews", formData);
       navigate("/"); // Redirect to homepage after successful creation
     } catch (error) {
       console.error("Error creating news:", error);

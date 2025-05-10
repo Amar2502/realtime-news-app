@@ -60,7 +60,7 @@ const NewsHomepage = () => {
     const fetchNews = async () => {
       setIsLoading(true);
       try {
-        const res = await axios.get("http://localhost:3000/news/getallnews/all");
+        const res = await axios.get("https://realtime-news-app-kjfj.onrender.com/news/getallnews/all");
         setLatestNews(res.data);
         // Set featured article (first trending one)
         const featuredArticle = res.data.find((article) => article.trending);

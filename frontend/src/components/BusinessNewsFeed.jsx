@@ -15,7 +15,7 @@ const BusinessNewsFeed = () => {
     
     // Fetch initial news
     setIsLoading(true);
-    axios.get(`http://localhost:3000/news/getallnews/${category}`)
+    axios.get(`https://realtime-news-app-kjfj.onrender.com/news/getallnews/${category}`)
       .then(res => {
         setNews(res.data);
         setIsLoading(false);

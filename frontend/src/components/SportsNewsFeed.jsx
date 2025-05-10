@@ -13,7 +13,7 @@ const SportsNewsFeed = () => {
     const fetchNews = async () => {
       setIsLoading(true);
       try {
-        const res = await axios.get(`http://localhost:3000/news/getallnews/${category}`);
+        const res = await axios.get(`https://realtime-news-app-kjfj.onrender.com/news/getallnews/${category}`);
         setNews(res.data);
       } catch (err) {
         console.error("Error fetching news:", err);
