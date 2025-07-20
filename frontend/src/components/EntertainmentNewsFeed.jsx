@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import socket from "../socket";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { Clock, TrendingUp, ChevronRight, Film, Star, ArrowLeft, Sparkles } from "lucide-react";
 
 const EntertainmentNewsFeed = () => {
   const [news, setNews] = useState([]);
@@ -52,111 +53,141 @@ const EntertainmentNewsFeed = () => {
     if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hours ago`;
     if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)} days ago`;
 
-    // For older dates, show the actual date
     const options = { year: "numeric", month: "short", day: "numeric" };
     return past.toLocaleDateString(undefined, options);
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <div className="flex flex-col md:flex-row items-center justify-between mb-8">
-        <div className="flex items-center mb-4 md:mb-0">
-          <div className="bg-gradient-to-r from-purple-500 to-indigo-600 text-white px-4 py-2 rounded-lg mr-4 shadow-md">
-            <h1 className="text-3xl font-bold flex items-center">
-              <svg className="w-8 h-8 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path>
-              </svg>
-              {category} News
-            </h1>
-          </div>
-          {!isLoading && (
-            <div className="flex items-center">
-              <span className="bg-gray-100 text-gray-800 text-sm font-medium px-3 py-1 rounded-full">
-                {news.length} articles
-              </span>
-            </div>
-          )}
-        </div>
-
-        <div className="flex items-center">
-          {isLoading ? (
-            <div className="flex items-center text-blue-500 bg-blue-50 px-4 py-2 rounded-md">
-              <svg className="animate-spin h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
-              <span>Updating feed...</span>
-            </div>
-          ) : (
-            <div className=""></div>
-          )}
-        </div>
-      </div>
-
-      {news.length === 0 && !isLoading ? (
-        <div className="bg-gray-50 rounded-lg p-8 text-center">
-          <svg className="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
-          </svg>
-          <p className="text-gray-600 text-lg">No news articles available</p>
-        </div>
-      ) : (
-        <div className="space-y-6">
-          {news.map((item) => (
-            <div key={item._id} className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-300">
-              <div className="p-6">
-                <div className="flex justify-between items-start mb-2">
-                  <h2 className="text-xl font-semibold text-gray-800 mb-2 flex-grow">{item.title}</h2>
-                  <span
-                    className={`text-xs font-semibold px-2.5 py-0.5 rounded-full ml-2 ${
-                      item.category === "Tech" || item.category === "tech"
-                        ? "bg-blue-100 text-blue-800"
-                        : item.category === "Finance"
-                        ? "bg-green-100 text-green-800"
-                        : item.category === "Business"
-                        ? "bg-indigo-100 text-indigo-800"
-                        : item.category === "Sports"
-                        ? "bg-orange-100 text-orange-800"
-                        : item.category === "Entertainment"
-                        ? "bg-purple-100 text-purple-800"
-                        : item.category === "Health"
-                        ? "bg-red-100 text-red-800"
-                        : item.category === "Science"
-                        ? "bg-cyan-100 text-cyan-800"
-                        : item.category === "Education"
-                        ? "bg-yellow-100 text-yellow-800"
-                        : item.category === "Politics"
-                        ? "bg-gray-100 text-gray-800"
-                        : item.category === "Environment"
-                        ? "bg-emerald-100 text-emerald-800"
-                        : "bg-blue-100 text-blue-800"
-                    }`}
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        {/* Header Section */}
+        <div className="mb-12 relative">
+          <div className="absolute inset-0 bg-gradient-to-r from-purple-600/5 to-pink-600/5 rounded-3xl"></div>
+          <div className="relative p-8 rounded-3xl backdrop-blur-sm bg-white/40 border border-white/20 shadow-lg">
+            <div className="flex justify-between items-start">
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-4">
+                  <Link 
+                    to="/"
+                    className="p-2 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors duration-200"
                   >
-                    {item.category}
-                  </span>
-                </div>
-                <p className="text-gray-600 mb-4 line-clamp-2 flex-grow">{item.content}</p>
-                <div className="flex justify-between items-center text-sm text-gray-500">
-                  <div className="flex items-center">
-                    <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                    {item.createdAt ? formatTimeAgo(item.createdAt) : "Recent"}
+                    <ArrowLeft className="w-5 h-5 text-gray-600" />
+                  </Link>
+                  <div className="p-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl">
+                    <Film className="w-6 h-6 text-white" />
                   </div>
-                  <div className="flex space-x-2">
-                    <Link
-                      to={`/news/${item._id}`}
-                      className="text-blue-500 hover:text-blue-700 font-medium"
-                    >
-                      Read more
-                    </Link>
+                  <div className="px-3 py-1 bg-purple-100 text-purple-700 text-sm font-medium rounded-full flex items-center gap-1">
+                    <Sparkles className="w-3 h-3" />
+                    Live Updates
                   </div>
                 </div>
+                <h1 className="text-5xl font-bold bg-gradient-to-r from-gray-900 via-purple-800 to-pink-800 bg-clip-text text-transparent mb-3">
+                  Entertainment News
+                </h1>
+                <p className="text-xl text-gray-600 max-w-2xl leading-relaxed">
+                  Get the latest buzz from Hollywood, music, celebrity news, and entertainment industry updates from around the globe.
+                </p>
+              </div>
+              {!isLoading && (
+                <div className="flex flex-col items-end gap-2">
+                  <div className="px-4 py-2 bg-white/60 backdrop-blur-sm rounded-2xl border border-white/30 shadow-sm">
+                    <span className="text-sm font-semibold text-gray-700">
+                      {news.length} Articles
+                    </span>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Loading State */}
+        {isLoading ? (
+          <div className="flex justify-center my-16">
+            <div className="flex flex-col items-center space-y-4">
+              <div className="relative">
+                <div className="animate-spin rounded-full h-12 w-12 border-4 border-purple-200"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-4 border-purple-500 border-t-transparent absolute top-0"></div>
+              </div>
+              <div className="text-center">
+                <p className="text-lg font-medium text-gray-700">Loading entertainment news...</p>
+                <p className="text-sm text-gray-500">Getting the latest celebrity buzz</p>
               </div>
             </div>
-          ))}
-        </div>
-      )}
+          </div>
+        ) : (
+          <>
+            {/* Empty State */}
+            {news.length === 0 ? (
+              <div className="flex justify-center my-16">
+                <div className="text-center p-12 bg-white/60 backdrop-blur-sm rounded-3xl border border-white/20 shadow-lg max-w-md">
+                  <div className="p-4 bg-gradient-to-r from-purple-100 to-pink-100 rounded-2xl w-fit mx-auto mb-6">
+                    <Film className="w-12 h-12 text-purple-400" />
+                  </div>
+                  <h3 className="text-xl font-semibold text-gray-700 mb-2">No Entertainment News Available</h3>
+                  <p className="text-gray-500">Check back soon for the latest celebrity updates and entertainment buzz</p>
+                </div>
+              </div>
+            ) : (
+              /* News Grid */
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {news.map((item, index) => (
+                  <div
+                    key={item._id}
+                    className="group relative bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 border border-gray-100 flex flex-col transform hover:-translate-y-2"
+                    style={{ animationDelay: `${index * 150}ms` }}
+                  >
+                    {/* Gradient overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-purple-50/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    
+                    <div className="relative p-6 flex flex-col flex-grow">
+                      <div className="flex items-center justify-between mb-4">
+                        <span className="px-3 py-1.5 text-xs font-bold rounded-full shadow-sm bg-gradient-to-r from-purple-100 to-purple-200 text-purple-800">
+                          {item.category}
+                        </span>
+                        
+                        {item.trending && (
+                          <div className="flex items-center gap-1 px-2 py-1 bg-gradient-to-r from-yellow-100 to-orange-100 text-orange-700 text-xs font-medium rounded-full">
+                            <Star className="w-3 h-3 fill-current" />
+                            Trending
+                          </div>
+                        )}
+                      </div>
+                      
+                      <h3 className="text-xl font-bold text-gray-900 mb-3 leading-tight group-hover:text-purple-700 transition-colors duration-300">
+                        {item.title}
+                      </h3>
+                      
+                      <p className="text-gray-600 mb-6 line-clamp-3 flex-grow leading-relaxed">
+                        {item.content}
+                      </p>
+                      
+                      <div className="flex justify-between items-center pt-4 border-t border-gray-100">
+                        <div className="flex items-center text-sm text-gray-500">
+                          <Clock className="w-4 h-4 mr-2 text-gray-400" />
+                          {item.createdAt ? formatTimeAgo(item.createdAt) : "Recent"}
+                        </div>
+                        
+                        <Link
+                          to={`/news/${item._id}`}
+                          className="inline-flex items-center text-sm font-semibold text-purple-600 hover:text-purple-700 group-hover:underline transition-colors duration-300"
+                        >
+                          Read more
+                          <ChevronRight className="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform duration-300" />
+                        </Link>
+                      </div>
+                    </div>
+                    
+                    {/* Hover accent line */}
+                    <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 to-pink-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </>
+        )}
+      </div>
     </div>
   );
 };
